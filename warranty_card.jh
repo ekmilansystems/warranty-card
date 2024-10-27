@@ -1,0 +1,70 @@
+
+application {
+  config {
+    baseName warrantyManager
+    applicationType gateway
+    packageName com.ekmilan.warrantymanager
+    authenticationType jwt
+    prodDatabaseType postgres
+    clientFramework react
+  }
+  entities *
+}
+
+entity Users {
+	userId UUID
+    name String
+    email String
+    passwordHash String
+    createdAt LocalDateTime
+}
+
+entity Product {
+	productId UUID
+    productName String
+    brand String
+    modelNumber String
+    createdAt LocalDateTime
+}
+
+entity Warranty {
+	warrantyId UUID
+    productId UUID NOT NUll
+    userId UUID NOT NUll
+    warrantyType String
+    period Integer
+    expiryDate LocalDate
+    termsConditions String
+    createdAt LocalDateTime
+}
+
+entity Document {
+ 	documentId UUID
+    warrantyId UUID NOT NUll
+    filePath String
+    createdAt LocalDateTime
+}
+
+entity Notification {
+ 	notificationId UUID
+    userId UUID NOT NUll
+    warrantyId UUID NOT NUll
+    notificationType String
+    status String
+    sentOn LocalDateTime
+    createdAt LocalDateTime
+}
+
+relationship OneToMany {
+  Users to @OnDelete("SET NULL") @OnUpdate("CASCADE") Warranty
+  Product to @OnDelete("SET NULL") @OnUpdate("CASCADE") Warranty
+}
+
+relationship OneToMany {
+  Users to @OnDelete("SET NULL") @OnUpdate("CASCADE") Notification
+  Warranty to @OnDelete("SET NULL") @OnUpdate("CASCADE") Notification
+}
+
+relationship OneToMany {
+  Warranty to @OnDelete("SET NULL") @OnUpdate("CASCADE") Document
+}
